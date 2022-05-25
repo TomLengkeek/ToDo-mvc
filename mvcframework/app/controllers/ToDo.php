@@ -20,6 +20,16 @@ Class ToDo extends Controller{
                             Gebruiker is helaas niet verwijderd probeer opnieuw
                         </div>';
                 break;
+            case "update-failed":
+                $alert = '<div class="alert alert-danger" role="alert">
+                            Gebruiker kon niet geupdate worden probeer opnieuw
+                        </div>';
+                break;
+            case "update-success":
+                $alert = '<div class="alert alert-success" role="alert">
+                            Gebruiker is succesvol geupdate
+                        </div>';
+                break;
         }
 
         try{
@@ -32,6 +42,11 @@ Class ToDo extends Controller{
                 <td>
                     <a href="'. URLROOT .'/todo/delete/'. $record->email . '">
                         <button type="button" class="btn btn-danger">delete</button>
+                    </a>
+                </td>
+                <td>
+                    <a href="'. URLROOT .'/todo/update/'. $record->email . '">
+                        <button type="button" class="btn btn-success">update</button>
                     </a>
                 </td>
             </tr>';
@@ -63,5 +78,39 @@ Class ToDo extends Controller{
             header("Location: " . URLROOT . "/todo/index/delete-failed");
         }
     }
+
+    public function update($email = ""){
+        if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $values = ["voornaam", "achternaam", "email", "oldemail"];
+
+            if(!$this->validate($values)){
+                header("Location: " . URLROOT . "/todo/index/update-failed");
+            }
+            
+            $this->GebruikerModel->voornaam = $this->sanitize($_POST["voornaam"]);
+            $this->GebruikerModel->achternaam = $this->sanitize($_POST["achternaam"]);
+            $this->GebruikerModel->email = $this->sanitize($_POST["email"]);
+            $this->GebruikerModel->oldemail = $this->sanitize($_POST["oldemail"]);
+
+            $this->GebruikerModel->updateGebruiker();
+            header("Location: " . URLROOT . "/todo/index/update-success");
+
+        }else{
+            try{
+                $this->GebruikerModel->email = $email;
+
+                $result = $this->GebruikerModel->getSingle();
+            }catch(PDOException $e){
+
+            }
+
+            $data = [
+                "info" => $result
+            ];
+            $this->view("ToDo/update",$data);
+        }
+        
+    }
+
 }
 

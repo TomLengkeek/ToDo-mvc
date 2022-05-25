@@ -22,6 +22,7 @@
                 <th scope="col">voornaam</th>
                 <th scope="col">achternaam</th>
                 <th scope="col"></th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>

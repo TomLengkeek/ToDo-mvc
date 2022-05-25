@@ -16,4 +16,23 @@
                 die("View does not exists.");
             }
         }
+        //check if any of the given values is empty inside the post arrray
+        protected function validate($values = []){
+            $validated = true;
+            foreach($values as $key){
+                if(empty($_POST[$key])){
+                    $validated = false;
+                    break;
+                }
+            }
+            return $validated;
+        }
+
+        //clears the string of html characters and spaces 
+        protected function sanitize($value){
+            $value = htmlspecialchars($value);
+            $value = trim($value);
+
+            return $value;
+        }
     }
